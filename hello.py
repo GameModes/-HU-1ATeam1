@@ -30,15 +30,34 @@ def doQuery(conn, _id, name, price):
 
 myConnection = psycopg2.connect(host=hostname, user=username, password=password, database=database)
 
+allvars = {}
 
 for x in all_products:
-    _id = x["_id"]
-    name = x["name"]
-    price = x["price"]["selling_price"]
-    if doQuery(myConnection, _id, name, price):
-        suc += 1
-    else:
-        fail += 1
+    try:
+        var = x["properties"]["variant"]
+        if var in allvars:
+            allvars[var] = allvars[var] + 1
+        else:
+            allvars[var] = 1
+    except KeyError:
+        continue
+    # _id = x["_id"]
+    # name = x["name"]
+    # price = x["price"]["selling_price"]
+    # if doQuery(myConnection, _id, name, price):
+    #     suc += 1
+    # else:
+    #     fail += 1
 
-print(f"{suc} / {len(all_products)} gelukt")
-print(f"{fail} / {len(all_products)} gefaald")
+allvars1 = {}
+allvars1plus = {}
+for i in allvars:
+    if allvars[i] > 1:
+        allvars1plus[i] = allvars[i]
+    else:
+        allvars1[i] = allvars[i]
+print("1", allvars1)
+print("1+", allvars1plus)
+
+# print(f"{suc} / {len(all_products)} gelukt")
+# print(f"{fail} / {len(all_products)} gefaald")
