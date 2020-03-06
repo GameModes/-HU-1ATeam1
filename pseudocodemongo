@@ -7,3 +7,5 @@ connectie = inloggevens voor psycopg2 om te koppelen met de database
 cursor = zet een cursor om bij te houden waar je bent
 
 with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie
+    productwriter = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category_id)
+    categoriewriter = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category)
