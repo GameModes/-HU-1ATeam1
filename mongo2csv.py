@@ -22,6 +22,7 @@ cur.execute('''
         drop table if exists doelgroepen;
         drop table if exists genders;
         drop table if exists sessions;
+        drop table if exists profiles
         ''')
 conn.commit()
 
@@ -62,14 +63,80 @@ cur.execute('''
             gender varchar
         );
         CREATE TABLE sessions(
-            id int,
-            start date,
-            end date,
+            id varchar,
+            session_start date,
+            session_end date,
             buid varchar,
             has_sale boolean
-        )
+        );
+        CREATE TABLE profiles(
+            id varchar,
+            buids varchar,
+            previously_recommended varchar,
+            segment varchar,
+            viewed_before varchar,
+            similars varchar
+        );
         ''')
 conn.commit()
+
+# Profiles
+with open('profiles.csv', 'w', newline='') as profs:
+    profs_fieldnames = ['id', 'buids', 'previously_recommended', 'segment', 'viewed_before', 'similars']
+    prof_writer = csv.DictWriter(profs, fieldnames=profs_fieldnames)
+    prof_writer.writeheader()
+    c = 0
+    for profile in mongoDB.visitors.find():
+        try:
+            buids_list = profile["buids"]
+            buids = ';'.join(buids_list)
+            previously_recommended_list = profile["previously_recommended"]
+            previously_recommended = ';'.join(previously_recommended_list)
+            viewed_before_list = profile["recommendations"]["viewed_before"]
+            viewed_before = ';'.join(viewed_before_list)
+            similars_list = profile["recommendations"]["similars"]
+            similars = ';'.join(similars_list)
+            prof_writer.writerow(
+                {
+                    'id': profile["_id"],
+                    'buids': buids,
+                    'previously_recommended': previously_recommended,
+                    'segment': profile["recommendations"]["segment"],
+                    'viewed_before': viewed_before,
+                    'similars': similars
+                }
+            )
+            c += 1
+        except:
+            continue
+        if c % 100000 == 0:
+            print("{} profiles records written...".format(c))
+    print(f"Finished creating the product database contents. {c} profiles loaded.")
+
+# Sessions
+with open('sessions.csv', 'w', newline='') as sess:
+    sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
+    sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
+    sess_writer.writeheader()
+    c = 0
+    for session in mongoDB.sessions.find():
+        try:
+            sess_writer.writerow(
+                {
+                    'id': session["_id"],
+                    'session_start': session["session_start"],
+                    'session_end': session["session_end"],
+                    'has_sale': session["has_sale"],
+                    'buid': session["buid"][0]
+                }
+            )
+            c += 1
+            if c % 100000 == 0:
+                print("{} session records written...".format(c))
+        except:
+            continue
+    print(f"Finished creating the product database contents. {c} sessions loaded.")
+
 
 # Products
 with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w', newline='') as cats, open('discounts.csv', 'w', newline='') as discs, open('brands.csv', 'w', newline='') as brands, open('variants.csv', 'w', newline='') as vars, open('doelgroepen.csv', 'w', newline='') as doels, open('genders.csv', 'w', newline='') as gends :
@@ -230,6 +297,23 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
 #             print("{} product records written...".format(c))
 # print("Finished creating the product database contents.")
 #
+
+# Profiles
+with open('profiles.csv', 'r') as profs:
+    next(profs)
+    cur.copy_from(profs, 'profiles', sep=',')
+    conn.commit()
+print("Profiles copied!")
+
+# Sessions
+with open('sessions.csv', 'r') as sess:
+    next(sess)
+    cur.copy_from(sess, 'sessions', sep=',')
+    conn.commit()
+print("Sessions copied!")
+
+
+# Products
 with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, open('discounts.csv', 'r') as discs, open('brands.csv', 'r') as brands, open('variants.csv', 'r') as vars, open('doelgroepen.csv', 'r') as doels, open('genders.csv', 'r') as gends:
     next(prods)
     cur.copy_from(prods, 'products', sep=',')
@@ -246,5 +330,6 @@ with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, op
     next(gends)
     cur.copy_from(gends, 'genders', sep=',')
     conn.commit()
+print("Products copied!")
 print("Check postgres")
 
