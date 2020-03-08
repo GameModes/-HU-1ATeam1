@@ -1,4 +1,5 @@
 import pymongo, psycopg2, csv
+from playsound import playsound
 
 def remove_commas(entry):
     return str(entry.replace(",", ""))
@@ -22,10 +23,11 @@ cur.execute('''
         drop table if exists doelgroepen;
         drop table if exists genders;
         drop table if exists sessions;
-        drop table if exists profiles
+        drop table if exists profiles;
+        drop table if exists prosess;
         ''')
 conn.commit()
-
+print("tables dropped")
 cur.execute('''
         CREATE TABLE products(
             id varchar,
@@ -71,42 +73,53 @@ cur.execute('''
         );
         CREATE TABLE profiles(
             id varchar,
-            buids varchar,
-            previously_recommended varchar,
+            buids text[],
+            previously_recommended text[],
             segment varchar,
-            viewed_before varchar,
-            similars varchar
+            viewed_before text[],
+            similars text[]
         );
+        CREATE TABLE prosess(
+	        profile_id varchar,
+	        session_id varchar,
+	        buid varchar
+        );  
         ''')
 conn.commit()
+print("tables made")
 
 # Profiles
 with open('profiles.csv', 'w', newline='') as profs:
     profs_fieldnames = ['id', 'buids', 'previously_recommended', 'segment', 'viewed_before', 'similars']
-    prof_writer = csv.DictWriter(profs, fieldnames=profs_fieldnames)
+    prof_writer = csv.DictWriter(profs, fieldnames=profs_fieldnames, quotechar="'", delimiter=";")
     prof_writer.writeheader()
     c = 0
     for profile in mongoDB.visitors.find():
         try:
             buids_list = profile["buids"]
-            buids = ';'.join(buids_list)
-            previously_recommended_list = profile["previously_recommended"]
-            previously_recommended = ';'.join(previously_recommended_list)
-            viewed_before_list = profile["recommendations"]["viewed_before"]
-            viewed_before = ';'.join(viewed_before_list)
-            similars_list = profile["recommendations"]["similars"]
-            similars = ';'.join(similars_list)
-            prof_writer.writerow(
-                {
-                    'id': profile["_id"],
-                    'buids': buids,
-                    'previously_recommended': previously_recommended,
-                    'segment': profile["recommendations"]["segment"],
-                    'viewed_before': viewed_before,
-                    'similars': similars
-                }
-            )
-            c += 1
+            buids = ','.join(buids_list)
+            if ";" not in buids:
+                buids = "{" + buids + "}"
+                previously_recommended_list = profile.get("previously_recommended", None)
+                previously_recommended = ','.join(previously_recommended_list)
+                previously_recommended = "{" + previously_recommended + "}"
+                viewed_before_list = profile["recommendations"].get("viewed_before", None)
+                viewed_before = ','.join(viewed_before_list)
+                viewed_before = "{" + viewed_before + "}"
+                similars_list = profile["recommendations"].get("similars", None)
+                similars = ','.join(similars_list)
+                similars = "{" + similars + "}"
+                prof_writer.writerow(
+                    {
+                        'id': profile["_id"],
+                        'buids': buids,
+                        'previously_recommended': previously_recommended,
+                        'segment': profile["recommendations"]["segment"],
+                        'viewed_before': viewed_before,
+                        'similars': similars
+                    }
+                )
+                c += 1
         except:
             continue
         if c % 100000 == 0:
@@ -114,34 +127,34 @@ with open('profiles.csv', 'w', newline='') as profs:
     print(f"Finished creating the product database contents. {c} profiles loaded.")
 
 # Sessions
-with open('sessions.csv', 'w', newline='') as sess:
-    sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
-    sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
-    sess_writer.writeheader()
-    c = 0
-    for session in mongoDB.sessions.find():
-        try:
-            sess_writer.writerow(
-                {
-                    'id': session["_id"],
-                    'session_start': session["session_start"],
-                    'session_end': session["session_end"],
-                    'has_sale': session["has_sale"],
-                    'buid': session["buid"][0]
-                }
-            )
-            c += 1
-            if c % 100000 == 0:
-                print("{} session records written...".format(c))
-        except:
-            continue
-    print(f"Finished creating the product database contents. {c} sessions loaded.")
+# with open('sessions.csv', 'w', newline='') as sess:
+#     sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
+#     sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
+#     sess_writer.writeheader()
+#     c = 0
+#     for session in mongoDB.sessions.find():
+#         try:
+#             sess_writer.writerow(
+#                 {
+#                     'id': session["_id"],
+#                     'session_start': session["session_start"],
+#                     'session_end': session["session_end"],
+#                     'has_sale': session["has_sale"],
+#                     'buid': session["buid"][0]
+#                 }
+#             )
+#             c += 1
+#             if c % 100000 == 0:
+#                 print("{} session records written...".format(c))
+#         except:
+#             continue
+#     print(f"Finished creating the product database contents. {c} sessions loaded.")
 
 
 # Products
 with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w', newline='') as cats, open('discounts.csv', 'w', newline='') as discs, open('brands.csv', 'w', newline='') as brands, open('variants.csv', 'w', newline='') as vars, open('doelgroepen.csv', 'w', newline='') as doels, open('genders.csv', 'w', newline='') as gends :
     prods_fieldnames = ['id', 'name', 'price', 'category_id', 'discount_id', 'brand_id', 'variant_id', 'doelgroep_id', 'gender_id']
-    cats_fieldnames = ['id', 'category']
+    cats_fieldnames = ['id', 'category', 'sub_category', 'sub_sub_category']
     discs_fieldnames = ['id', 'discount']
     brands_fieldnames = ['id', 'brand']
     vars_fieldnames = ['id', 'variant']
@@ -172,20 +185,25 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
         try:
             prod_id = remove_commas(str(product["_id"]))
             cat = remove_commas(str(product.get("category", None)))
+            sub_cat = remove_commas(str(product.get("sub_category", None)))
+            sub_sub_cat = remove_commas(str(product.get("sub_sub_category", None)))
             disc = remove_commas(str(product["properties"].get("discount", None)))
             brand = remove_commas(str(product.get("brand", None)))
             var = remove_commas(str(product["properties"].get("variant", None)))
             doel = remove_commas(str(product["properties"].get("doelgroep", None)))
             gend = remove_commas(str(product.get("gender", None)))
-            if cat not in cats_dict:
+            cat_search = cat + sub_cat + sub_sub_cat
+            if cat_search not in cats_dict:
                 if len(cats_dict) > 0:
-                    cats_dict[cat] = max(cats_dict.values())+1
+                    cats_dict[cat_search] = max(cats_dict.values())+1
                 else:
-                    cats_dict[cat] = 1
+                    cats_dict[cat_search] = 1
                 cats_writer.writerow(
                     {
-                        'id': cats_dict[cat],
-                        'category': cat
+                        'id': cats_dict[cat_search],
+                        'category': cat,
+                        'sub_category': sub_cat,
+                        'sub_sub_category': sub_sub_cat
                     }
                 )
             cat_id = cats_dict[cat]
@@ -301,7 +319,7 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
 # Profiles
 with open('profiles.csv', 'r') as profs:
     next(profs)
-    cur.copy_from(profs, 'profiles', sep=',')
+    cur.copy_from(profs, 'profiles', sep=';')
     conn.commit()
 print("Profiles copied!")
 
@@ -331,5 +349,15 @@ with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, op
     cur.copy_from(gends, 'genders', sep=',')
     conn.commit()
 print("Products copied!")
+
+# cur.execute("""INSERT INTO prosess
+# (profile_id, session_id, buid)
+# SELECT profiles.id, sessions.id, sessions.buid
+# FROM sessions
+# INNER JOIN profiles ON sessions.buid= ANY(profiles.buids);""")
+# conn.commit()
+conn.close()
+
 print("Check postgres")
+playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
 
