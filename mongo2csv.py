@@ -10,7 +10,7 @@ mongoDB = client["huwebshop"]
 hostname = 'localhost'
 username = 'postgres'
 password = 'Floris09'
-database = 'huwebshop'
+database = 'huws'
 conn = psycopg2.connect(host=hostname, user=username, password=password, database=database)
 cur = conn.cursor()
 
@@ -42,7 +42,9 @@ cur.execute('''
         );
         CREATE TABLE categories(
             id int,
-            category varchar
+            category varchar,
+            sub_category varchar,
+            sub_sub_category varchar
         );
         CREATE TABLE discounts(
             id int,
@@ -127,28 +129,28 @@ with open('profiles.csv', 'w', newline='') as profs:
     print(f"Finished creating the product database contents. {c} profiles loaded.")
 
 # Sessions
-# with open('sessions.csv', 'w', newline='') as sess:
-#     sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
-#     sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
-#     sess_writer.writeheader()
-#     c = 0
-#     for session in mongoDB.sessions.find():
-#         try:
-#             sess_writer.writerow(
-#                 {
-#                     'id': session["_id"],
-#                     'session_start': session["session_start"],
-#                     'session_end': session["session_end"],
-#                     'has_sale': session["has_sale"],
-#                     'buid': session["buid"][0]
-#                 }
-#             )
-#             c += 1
-#             if c % 100000 == 0:
-#                 print("{} session records written...".format(c))
-#         except:
-#             continue
-#     print(f"Finished creating the product database contents. {c} sessions loaded.")
+with open('sessions.csv', 'w', newline='') as sess:
+    sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
+    sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
+    sess_writer.writeheader()
+    c = 0
+    for session in mongoDB.sessions.find():
+        try:
+            sess_writer.writerow(
+                {
+                    'id': session["_id"],
+                    'session_start': session["session_start"],
+                    'session_end': session["session_end"],
+                    'has_sale': session["has_sale"],
+                    'buid': session["buid"][0]
+                }
+            )
+            c += 1
+            if c % 100000 == 0:
+                print("{} session records written...".format(c))
+        except:
+            continue
+    print(f"Finished creating the product database contents. {c} sessions loaded.")
 
 
 # Products
@@ -206,7 +208,7 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
                         'sub_sub_category': sub_sub_cat
                     }
                 )
-            cat_id = cats_dict[cat]
+            cat_id = cats_dict[cat_search]
 
             if disc not in disc_dict:
                 if len(disc_dict) > 0:
