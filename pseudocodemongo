@@ -20,9 +20,7 @@ with open profiles.csv bestand met als leesregelvervanging ("w") als naam profs:
    for profielen in de sectie visitors in de MongoDB database:
        buidslist = sla id's van gebruikers op in een lijst
        if ";" niet in de lijst buids zit:
-            
-        
-
+            maakt van de waarde None (niet bestaand) om fouten te voorkomen
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met profiles downloaden)
@@ -43,3 +41,17 @@ print(klaar met sessions laden)
 with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie, open discounts.csv met als leesregel vervanging ("w")
     productwriter = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category_id)
     categoriewriter = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category)
+        prods_fieldnames = ['id', 'name', 'price', 'category_id', 'discount_id', 'brand_id', 'variant_id', 'doelgroep_id', 'gender_id']
+    cats_fieldnames = ['id', 'category', 'sub_category', 'sub_sub_category']
+    discs_fieldnames = ['id', 'discount']
+    brands_fieldnames = ['id', 'brand']
+    vars_fieldnames = ['id', 'variant']
+    doels_fieldnames = ['id', 'doelgroep']
+    gends_fieldnames = ['id', 'gender']
+    prod_writer = csv.DictWriter(prods, fieldnames=prods_fieldnames)
+    cats_writer = csv.DictWriter(cats, fieldnames=cats_fieldnames)
+    discs_writer = csv.DictWriter(discs, fieldnames=discs_fieldnames)
+    brand_writer = csv.DictWriter(brands, fieldnames=brands_fieldnames)
+    var_writer = csv.DictWriter(vars, fieldnames=vars_fieldnames)
+    doel_writer = csv.DictWriter(doels, fieldnames=doels_fieldnames)
+    gend_writer = csv.DictWriter(gends, fieldnames=gends_fieldnames)
