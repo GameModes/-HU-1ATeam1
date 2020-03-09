@@ -41,17 +41,21 @@ print(klaar met sessions laden)
 with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie, open discounts.csv met als leesregel vervanging ("w")
     productwriter = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category_id)
     categoriewriter = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category)
-        prods_fieldnames = ['id', 'name', 'price', 'category_id', 'discount_id', 'brand_id', 'variant_id', 'doelgroep_id', 'gender_id']
-    cats_fieldnames = ['id', 'category', 'sub_category', 'sub_sub_category']
-    discs_fieldnames = ['id', 'discount']
-    brands_fieldnames = ['id', 'brand']
-    vars_fieldnames = ['id', 'variant']
-    doels_fieldnames = ['id', 'doelgroep']
-    gends_fieldnames = ['id', 'gender']
-    prod_writer = csv.DictWriter(prods, fieldnames=prods_fieldnames)
-    cats_writer = csv.DictWriter(cats, fieldnames=cats_fieldnames)
-    discs_writer = csv.DictWriter(discs, fieldnames=discs_fieldnames)
-    brand_writer = csv.DictWriter(brands, fieldnames=brands_fieldnames)
-    var_writer = csv.DictWriter(vars, fieldnames=vars_fieldnames)
-    doel_writer = csv.DictWriter(doels, fieldnames=doels_fieldnames)
-    gend_writer = csv.DictWriter(gends, fieldnames=gends_fieldnames)
+    
+    prods_fieldnames = opent products bij de sectie genderid
+    cats_fieldnames = opent de categorien bij de sectie sub_category
+    discs_fieldnames = opent de kortingen bij de sectie discounts
+    brands_fieldnames = opent de merken bij de sectie brand
+    vars_fieldnames = opent de variatie bij de sectie variant
+    doels_fieldnames = opent de doelgroepen bij de sectie doelgroep
+    gends_fieldnames = opent de geslacht bij de sectie gender
+    prod_writer = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (prods_fieldnames)
+    cats_writer = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (cats_fieldnames)
+    discs_writer = maakt een Discount Dictionary writer voor in de csv bestand uit de plaats van de gegevens (discs_fieldnames )
+    brand_writer = maakt een Merk Dictionary writer voor in de csv bestand uit de plaats van de gegevens (brands_fieldnames)
+    var_writer = maakt een Variatie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (vars_fieldnames )
+    doel_writer = maakt een doelgroepen Dictionary writer voor in de csv bestand uit de plaats van de gegevens (doels_fieldnames)
+    gend_writer = maakt een Geslacht Dictionary writer voor in de csv bestand uit de plaats van de gegevens (gends_fieldnames)
+    dict = een lege lijst voor elke gegevenscategorie
+    
+    
