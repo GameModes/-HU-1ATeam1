@@ -39,9 +39,6 @@ print(klaar met sessions laden)
 
 #kopje Product
 with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie, open discounts.csv met als leesregel vervanging ("w")
-    productwriter = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category_id)
-    categoriewriter = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category)
-    
     prods_fieldnames = opent products bij de sectie genderid
     cats_fieldnames = opent de categorien bij de sectie sub_category
     discs_fieldnames = opent de kortingen bij de sectie discounts
@@ -56,6 +53,15 @@ with open productencsv bestand met als leesregel vervanging ("w") als naam produ
     var_writer = maakt een Variatie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (vars_fieldnames )
     doel_writer = maakt een doelgroepen Dictionary writer voor in de csv bestand uit de plaats van de gegevens (doels_fieldnames)
     gend_writer = maakt een Geslacht Dictionary writer voor in de csv bestand uit de plaats van de gegevens (gends_fieldnames)
-    dict = een lege lijst voor elke gegevenscategorie
+    dict = voor elke gegevenscategorie een lege dictionary behalve products
+    for producten in de mongoDB in het kopje Products:
+        ~
+        voor elke gegevenscategorie ~
+        alle_categories = categorie + sub-categorie + sub-sub-categorie
+        if alle_categories niet in categoriedictionary:
+            if categoriedictionary is niet leeg:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
+            else:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
     
     
