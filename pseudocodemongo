@@ -63,5 +63,128 @@ with open productencsv bestand met als leesregel vervanging ("w") als naam produ
                 de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
             else:
                 de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            discs_writer.writerow(
+                    {
+                        'id': disc_dict[disc],
+                        'discount': disc
+                    }
+                )
+            disc_id = disc_dict[disc]
+
+            if brand not in brands_dict:
+                if len(brands_dict) > 0:
+                    brands_dict[brand] = max(brands_dict.values()) + 1
+                else:
+                    brands_dict[brand] = 1
+                brand_writer.writerow(
+                    {
+                        'id': brands_dict[brand],
+                        'brand': brand
+                    }
+                )
+            brand_id = brands_dict[brand]
+
+            if var not in vars_dict:
+                if len(vars_dict) > 0:
+                    vars_dict[var] = max(vars_dict.values()) + 1
+                else:
+                    vars_dict[var] = 1
+                var_writer.writerow(
+                    {
+                        'id': vars_dict[var],
+                        'variant': var
+                    }
+                )
+            var_id = vars_dict[var]
+
+            if doel not in doels_dict:
+                if len(doels_dict) > 0:
+                    doels_dict[doel] = max(doels_dict.values()) + 1
+                else:
+                    doels_dict[doel] = 1
+                doel_writer.writerow(
+                    {
+                        'id': doels_dict[doel],
+                        'doelgroep': doel
+                    }
+                )
+            doel_id = doels_dict[doel]
+
+            if gend not in gends_dict:
+                if len(gends_dict) > 0:
+                    gends_dict[gend] = max(gends_dict.values()) + 1
+                else:
+                    gends_dict[gend] = 1
+                gend_writer.writerow(
+                    {
+                        'id': gends_dict[gend],
+                        'gender': gend
+                    }
+                )
+            gend_id = gends_dict[gend]
+
+            if "." not in str(product["price"]["selling_price"]):
+                try:
+                    prod_writer.writerow(
+                        {
+                            'id': prod_id,
+                            'name': remove_commas(str(product.get("name", None))),
+                            'price': product["price"]["selling_price"],
+                            'category_id': cat_id,
+                            'discount_id': disc_id,
+                            'brand_id': brand_id,
+                            'variant_id': var_id,
+                            'doelgroep_id': doel_id,
+                            'gender_id': gend_id
+                        }
+                    )
+                    c += 1
+                except:
+                    continue
+            if c % 10000 == 0:
+                print("{} product records written...".format(c))
+        except:
+            print(prod_id)
+    print(f"Finished creating the product database contents. {c} rows loaded.")
+
+# Profiles
+with open('profiles.csv', 'r') as profs:
+    next(profs)
+    cur.copy_from(profs, 'profiles', sep=';')
+    conn.commit()
+print("Profiles copied!")
+
+# Sessions
+with open('sessions.csv', 'r') as sess:
+    next(sess)
+    cur.copy_from(sess, 'sessions', sep=',')
+    conn.commit()
+print("Sessions copied!")
+
+
+# Products
+with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, open('discounts.csv', 'r') as discs, open('brands.csv', 'r') as brands, open('variants.csv', 'r') as vars, open('doelgroepen.csv', 'r') as doels, open('genders.csv', 'r') as gends:
+    next(prods)
+    cur.copy_from(prods, 'products', sep=',')
+    next(cats)
+    cur.copy_from(cats, 'categories', sep=',')
+    next(discs)
+    cur.copy_from(discs, 'discounts', sep=',')
+    next(brands)
+    cur.copy_from(brands, 'brands', sep=',')
+    next(vars)
+    cur.copy_from(vars, 'variants', sep=',')
+    next(doels)
+    cur.copy_from(doels, 'doelgroepen', sep=',')
+    next(gends)
+    cur.copy_from(gends, 'genders', sep=',')
+    conn.commit()
+print("Products copied!")
+
+conn.close()
+
+print("Check postgres")
+playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
     
     
