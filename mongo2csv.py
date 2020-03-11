@@ -1,5 +1,4 @@
 import pymongo, psycopg2, csv
-from playsound import playsound
 
 def remove_commas(entry):
     return str(entry.replace(",", ""))
@@ -355,5 +354,4 @@ print("Products copied!")
 conn.close()
 
 print("Done!")
-playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
 
