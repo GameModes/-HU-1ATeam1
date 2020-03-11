@@ -15,30 +15,31 @@ conn = psycopg2.connect(host=hostname, user=username, password=password, databas
 cur = conn.cursor()
 
 cur.execute('''
-        drop table if exists products;
+        --Er wordt gebruik maken drop ... CASCADE , want er zitten constraints van de tabellen die afhankelijk is aan andere tabellen 
+        drop table if exists products CASCADE ;
         drop table if exists categories;
-        drop table if exists discounts;
         drop table if exists brands;
-        drop table if exists variants;
         drop table if exists doelgroepen;
-        drop table if exists genders;
-        drop table if exists sessions;
-        drop table if exists profiles;
-        drop table if exists prosess;
+        
+        drop table if exists profiles CASCADE ;
+        drop table if exists products_profiles;
+        
+        drop table if exists sessions CASCADE ;
+        drop table if exists orders;-- produc_sessions
         ''')
 conn.commit()
 print("tables dropped")
 cur.execute('''
+       --Products
         CREATE TABLE products(
             id varchar,
             name varchar,
             price int,
-            category_id int,
-            discount_id int,
-            brand_id int,
-            variant_id int,
-            doelgroep_id int,
-            gender_id int
+            categoriesID int,
+            doelgroepenID int,
+            brandsID int,
+            variants int,
+	        discount int
         );
         CREATE TABLE categories(
             id int,
@@ -46,46 +47,100 @@ cur.execute('''
             sub_category varchar,
             sub_sub_category varchar
         );
-        CREATE TABLE discounts(
-            id int,
-            discount varchar
-        );
         CREATE TABLE brands(
             id int,
             brand varchar
         );
-        CREATE TABLE variants(
-            id int,
-            variant varchar
-        );
         CREATE TABLE doelgroepen(
             id int,
-            doelgroep varchar
+            doelgroep varchar,
+            genders   varchar 
         );
-        CREATE TABLE genders(
-            id int,
-            gender varchar
+        
+        --Profiles
+       CREATE TABLE profiles(
+            id varchar,
+            buids text[],
+            segment varchar,
+            similars text[]
         );
+        CREATE TABLE products_profiles(
+            productsID varchar,
+            profilesID varchar, 
+            product_viewed_before bool, 
+            product_recommended_before bool
+        );
+        
+       --Sessions
         CREATE TABLE sessions(
             id varchar,
+            profilesID varchar,
             session_start date,
             session_end date,
             buid varchar,
-            has_sale boolean
+            has_sale int 
         );
-        CREATE TABLE profiles(
-            id varchar,
-            buids text[],
-            previously_recommended text[],
-            segment varchar,
-            viewed_before text[],
-            similars text[]
+        
+        --Koppeltabel van products en sessions
+        CREATE TABLE orders(
+            productsID varchar,
+            sessionsID varchar,
+            count int 
         );
-        CREATE TABLE prosess(
-	        profile_id varchar,
-	        session_id varchar,
-	        buid varchar
-        );  
+        
+        --Define primary keys (6x)
+        
+        ALTER Table products
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE categories
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE brands
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE doelgroepen
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE profiles
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE sessions
+        ADD PRIMARY KEY (id);
+        
+        --Define foreign keys
+        
+        -- products
+        ALTER TABLE products
+        ADD FOREIGN KEY (categoriesID) REFERENCES categories(id);
+        
+        ALTER TABLE products
+        ADD FOREIGN KEY (doelgroepenID) REFERENCES doelgroepen(id);
+        
+        ALTER TABLE products
+        ADD FOREIGN KEY (brandsID) REFERENCES brands(id);
+        
+        -- product_profiles
+        ALTER TABLE products_profiles
+        ADD CONSTRAINT FK_Product_Profile
+        FOREIGN KEY (productsID) REFERENCES products(id);
+;        
+        ALTER TABLE products_profiles
+        ADD CONSTRAINT  FK_Profile_Product
+        FOREIGN KEY (profilesID) REFERENCES profiles(id);
+        
+        --sessions
+        ALTER TABLE  sessions
+        ADD FOREIGN KEY (profilesID) REFERENCES  profiles(id);
+        
+        --orders
+        ALTER TABLE orders
+        ADD CONSTRAINT FK_Products_Sessions
+        FOREIGN KEY (productsID) REFERENCES products(id);
+        
+        ALTER TABLE orders
+        ADD CONSTRAINT FK_Sessions_Products
+        FOREIGN KEY (sessionsID) REFERENCES sessions(id);
         ''')
 conn.commit()
 print("tables made")
