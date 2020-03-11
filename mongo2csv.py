@@ -17,14 +17,10 @@ cur = conn.cursor()
 cur.execute('''
         drop table if exists products;
         drop table if exists categories;
-        drop table if exists discounts;
         drop table if exists brands;
-        drop table if exists variants;
         drop table if exists doelgroepen;
-        drop table if exists genders;
         drop table if exists sessions;
         drop table if exists profiles;
-        drop table if exists prosess;
         ''')
 conn.commit()
 print("tables dropped")
@@ -34,11 +30,11 @@ cur.execute('''
             name varchar,
             price int,
             category_id int,
-            discount_id int,
             brand_id int,
-            variant_id int,
             doelgroep_id int,
-            gender_id int
+            discount varchar,
+            variant varchar,
+            gender varchar
         );
         CREATE TABLE categories(
             id int,
@@ -46,32 +42,21 @@ cur.execute('''
             sub_category varchar,
             sub_sub_category varchar
         );
-        CREATE TABLE discounts(
-            id int,
-            discount varchar
-        );
         CREATE TABLE brands(
             id int,
             brand varchar
-        );
-        CREATE TABLE variants(
-            id int,
-            variant varchar
         );
         CREATE TABLE doelgroepen(
             id int,
             doelgroep varchar
         );
-        CREATE TABLE genders(
-            id int,
-            gender varchar
-        );
         CREATE TABLE sessions(
             id varchar,
             session_start date,
             session_end date,
+            has_sale boolean,
             buid varchar,
-            has_sale boolean
+            product_ids text[]
         );
         CREATE TABLE profiles(
             id varchar,
@@ -81,11 +66,6 @@ cur.execute('''
             viewed_before text[],
             similars text[]
         );
-        CREATE TABLE prosess(
-	        profile_id varchar,
-	        session_id varchar,
-	        buid varchar
-        );  
         ''')
 conn.commit()
 print("tables made")
@@ -126,36 +106,46 @@ with open('profiles.csv', 'w', newline='') as profs:
             continue
         if c % 100000 == 0:
             print("{} profiles records written...".format(c))
-    print(f"Finished creating the product database contents. {c} profiles loaded.")
+    print(f"Finished creating the profiles database contents. {c} profiles loaded.")
 
 # Sessions
 with open('sessions.csv', 'w', newline='') as sess:
-    sess_fieldnames = ['id', 'session_start', 'session_end', 'buid', 'has_sale']
-    sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames)
+    sess_fieldnames = ['id', 'session_start', 'session_end', 'has_sale', 'buid', 'order']
+    sess_writer = csv.DictWriter(sess, fieldnames=sess_fieldnames, quotechar="'", delimiter=";")
     sess_writer.writeheader()
     c = 0
     for session in mongoDB.sessions.find():
+        orderobj = session.get("order", None)
+        if orderobj is not None:
+            products_in_order = orderobj.get("products")
+            products_ids_list = []
+            for i in products_in_order:
+                products_ids_list.append(i["id"])
+            products_ids = ','.join(products_ids_list)
+            products_ids = "{" + products_ids + "}"
         try:
-            sess_writer.writerow(
-                {
-                    'id': session["_id"],
-                    'session_start': session["session_start"],
-                    'session_end': session["session_end"],
-                    'has_sale': session["has_sale"],
-                    'buid': session["buid"][0]
-                }
-            )
+            if '=' not in session["_id"]:
+                sess_writer.writerow(
+                    {
+                        'id': session["_id"],
+                        'session_start': session["session_start"],
+                        'session_end': session["session_end"],
+                        'has_sale': session["has_sale"],
+                        'buid': session["buid"][0],
+                        'order': products_ids
+                    }
+                )
             c += 1
             if c % 100000 == 0:
                 print("{} session records written...".format(c))
         except:
             continue
-    print(f"Finished creating the product database contents. {c} sessions loaded.")
+print(f"Finished creating the sessions database contents. {c} sessions loaded.")
 
 
 # Products
 with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w', newline='') as cats, open('discounts.csv', 'w', newline='') as discs, open('brands.csv', 'w', newline='') as brands, open('variants.csv', 'w', newline='') as vars, open('doelgroepen.csv', 'w', newline='') as doels, open('genders.csv', 'w', newline='') as gends :
-    prods_fieldnames = ['id', 'name', 'price', 'category_id', 'discount_id', 'brand_id', 'variant_id', 'doelgroep_id', 'gender_id']
+    prods_fieldnames = ['id', 'name', 'price', 'category_id', 'brand_id', 'doelgroep_id', 'discount', 'variant', 'gender']
     cats_fieldnames = ['id', 'category', 'sub_category', 'sub_sub_category']
     discs_fieldnames = ['id', 'discount']
     brands_fieldnames = ['id', 'brand']
@@ -210,19 +200,6 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
                 )
             cat_id = cats_dict[cat_search]
 
-            if disc not in disc_dict:
-                if len(disc_dict) > 0:
-                    disc_dict[disc] = max(disc_dict.values()) + 1
-                else:
-                    disc_dict[disc] = 1
-                discs_writer.writerow(
-                    {
-                        'id': disc_dict[disc],
-                        'discount': disc
-                    }
-                )
-            disc_id = disc_dict[disc]
-
             if brand not in brands_dict:
                 if len(brands_dict) > 0:
                     brands_dict[brand] = max(brands_dict.values()) + 1
@@ -235,19 +212,6 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
                     }
                 )
             brand_id = brands_dict[brand]
-
-            if var not in vars_dict:
-                if len(vars_dict) > 0:
-                    vars_dict[var] = max(vars_dict.values()) + 1
-                else:
-                    vars_dict[var] = 1
-                var_writer.writerow(
-                    {
-                        'id': vars_dict[var],
-                        'variant': var
-                    }
-                )
-            var_id = vars_dict[var]
 
             if doel not in doels_dict:
                 if len(doels_dict) > 0:
@@ -279,15 +243,16 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
                 try:
                     prod_writer.writerow(
                         {
+                            #['id', 'name', 'price', 'category_id', 'brand_id', 'doelgroep_id', 'discount', 'variant']
                             'id': prod_id,
                             'name': remove_commas(str(product.get("name", None))),
                             'price': product["price"]["selling_price"],
                             'category_id': cat_id,
-                            'discount_id': disc_id,
                             'brand_id': brand_id,
-                            'variant_id': var_id,
                             'doelgroep_id': doel_id,
-                            'gender_id': gend_id
+                            'discount': disc,
+                            'variant': var,
+                            'gender': gend
                         }
                     )
                     c += 1
@@ -301,23 +266,6 @@ with open('products.csv', 'w', newline='') as prods, open('categories.csv', 'w',
 
 
 
-# with open('products.csv', 'w', newline='') as csvout:
-#     fieldnames = ['id', 'category', 'subcategory', 'subsubcategory']
-#     writer = csv.DictWriter(csvout, fieldnames=fieldnames)
-#     writer.writeheader()
-#     c = 0
-#     for product in mongoDB.products.find():
-#         writer.writerow({'id': product["_id"],
-#                          'category': remove_commas(str(product.get("category", None))),
-#                          'subcategory': remove_commas(str(product.get("sub_category", None))),
-#                          'subsubcategory': remove_commas(str(product.get("sub_sub_category", None)))
-#                          })
-#         c += 1
-#         if c % 10000 == 0:
-#             print("{} product records written...".format(c))
-# print("Finished creating the product database contents.")
-#
-
 # Profiles
 with open('profiles.csv', 'r') as profs:
     next(profs)
@@ -328,7 +276,7 @@ print("Profiles copied!")
 # Sessions
 with open('sessions.csv', 'r') as sess:
     next(sess)
-    cur.copy_from(sess, 'sessions', sep=',')
+    cur.copy_from(sess, 'sessions', sep=';')
     conn.commit()
 print("Sessions copied!")
 
@@ -352,14 +300,16 @@ with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, op
     conn.commit()
 print("Products copied!")
 
+# Er staat een limit op om het proces te versnellen
 # cur.execute("""INSERT INTO prosess
 # (profile_id, session_id, buid)
 # SELECT profiles.id, sessions.id, sessions.buid
 # FROM sessions
-# INNER JOIN profiles ON sessions.buid= ANY(profiles.buids);""")
+# INNER JOIN profiles ON sessions.buid= ANY(profiles.buids)
+# LIMIT 100;""")
 # conn.commit()
 conn.close()
 
-print("Check postgres")
+print("Done!")
 playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
 
