@@ -22,7 +22,7 @@ cur.execute('''
         drop table if exists doelgroepen;
         
         drop table if exists profiles CASCADE ;
-        drop table if exists products_profiles;
+  
         
         drop table if exists sessions CASCADE ;
         drop table if exists orders;-- produc_sessions
@@ -64,12 +64,7 @@ cur.execute('''
             segment varchar,
             similars text[]
         );
-        CREATE TABLE products_profiles(
-            productsID varchar,
-            profilesID varchar, 
-            product_viewed_before bool, 
-            product_recommended_before bool
-        );
+        
         
        --Sessions
         CREATE TABLE sessions(
@@ -108,7 +103,7 @@ cur.execute('''
         ALTER TABLE sessions
         ADD PRIMARY KEY (id);
         
-        --Define foreign keys
+        -- Define foreign keys
         
         -- products
         ALTER TABLE products
@@ -120,14 +115,7 @@ cur.execute('''
         ALTER TABLE products
         ADD FOREIGN KEY (brandsID) REFERENCES brands(id);
         
-        -- product_profiles
-        ALTER TABLE products_profiles
-        ADD CONSTRAINT FK_Product_Profile
-        FOREIGN KEY (productsID) REFERENCES products(id);
-;        
-        ALTER TABLE products_profiles
-        ADD CONSTRAINT  FK_Profile_Product
-        FOREIGN KEY (profilesID) REFERENCES profiles(id);
+       
         
         --sessions
         ALTER TABLE  sessions
