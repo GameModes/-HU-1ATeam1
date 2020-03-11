@@ -14,7 +14,7 @@ connectie.commit
 
 #kopje Profiles
 Open bestand profiles.csv for WRITE:
-   fieldnames = lijst met de bezochte attributen van de collection profifles # kan beter uitgelegd worden 
+   fieldnames = lijst met de bezochte attributen van de collection profiles die wordt gebruikt als header  
    profwriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
    
@@ -24,7 +24,7 @@ Open bestand profiles.csv for WRITE:
        
        if ";" niet in de lijst buids zit:
              maakt van de waarde None (niet bestaand) om fouten te voorkomen 
-           Schrijf 
+           Schrijf de benodigde eigenschappen uit collection profiles van Mongodb op de passende header 
             c = c + 1
             
       if c een 100000 tal bereikt dan:
@@ -37,8 +37,8 @@ Open session.csv for WRITE:
    sesswriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
    for sessions in de sectie sessions in de MongoDB database:           
-        #Moet nog uitgewerkt worden 
-
+        Schrijf de benodigde eigenschappen uit collection session van Mongodb op de passende header
+        c = c + 1
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met sessions laden)
