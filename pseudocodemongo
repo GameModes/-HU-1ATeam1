@@ -1,6 +1,6 @@
 import databaseconnectiemodule, databaseadaptermodule, csvaanmaakbestandmodule
 
-def verwijderkomma's:
+functie verwijderkomma's:
     Geef alle waarden terug, waarbij de komma wordt vervangen door niks
    
 connectie = inloggevens voor psycopg2 om te koppelen met de database
@@ -13,32 +13,38 @@ cursor.execute(maak tabellen aan met hun relaties en keys)
 connectie.commit
 
 #kopje Profiles
-with open profiles.csv bestand met als leesregelvervanging ("w") als naam profs:
-   fieldnames = plek waar de bezochte products staan
+Open bestand profiles.csv for WRITE:
+   fieldnames = lijst met de bezochte attributen van de collection profifles # kan beter uitgelegd worden 
    profwriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
-   for profielen in de sectie visitors in de MongoDB database:
-       buidslist = sla id's van gebruikers op in een lijst
+   
+   for each profile in de collection profiles in de MongoDB database:
+       buidslist = sla de browserids op in een lijst
+       buids = voeg alle browserids in buidslist samen  met een komma als scheiding
+       
        if ";" niet in de lijst buids zit:
-            maakt van de waarde None (niet bestaand) om fouten te voorkomen
+             maakt van de waarde None (niet bestaand) om fouten te voorkomen 
+           Schrijf 
+            c = c + 1
+            
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met profiles downloaden)
 
 #kopje Sessions
-with open sessions.csv bestand met als leesregelvervanging ("w") als naam sess:
-   fieldnames = plek waar de
+Open session.csv for WRITE:
+   fieldnames = lijst met de bezochte attributen van de collection sessons # kan beter uitgelegd worden
    sesswriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
    for sessions in de sectie sessions in de MongoDB database:           
-        
+        #Moet nog uitgewerkt worden 
 
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met sessions laden)
 
 #kopje Product
-with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie, open discounts.csv met als leesregel vervanging ("w")
+Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, variants.csv,doelgroep.csv, genders.csv for WRITE 
     prods_fieldnames = opent products bij de sectie genderid
     cats_fieldnames = opent de categorien bij de sectie sub_category
     discs_fieldnames = opent de kortingen bij de sectie discounts
@@ -147,20 +153,35 @@ with open productencsv bestand met als leesregel vervanging ("w") als naam produ
         except:
             print(prod_id)
     print(f"Finished creating the product database contents. {c} rows loaded.")
+    
 
 # Profiles
-with open('profiles.csv', 'r') as profs:
+with open('profiles.csv', 'r') as profs: 
     next(profs)
     cur.copy_from(profs, 'profiles', sep=';')
     conn.commit()
 print("Profiles copied!")
 
+# Misschien kan je dit pseudocode gebruiken 
+#Vb profiles
+Open bestand profiles.csv:
+    skip header row van profiles.csv
+    importeer profiles.csv in tabel profiles
+Print('Profiles copied')
+
+
 # Sessions
 with open('sessions.csv', 'r') as sess:
-    next(sess)
+    next(sess) 
     cur.copy_from(sess, 'sessions', sep=',')
     conn.commit()
 print("Sessions copied!")
+
+#Vb sessions
+Open bestand sessions.csv:
+    skip header row van session.csv
+    importeer profiles.csv in tabel sessions
+Print('Sessions copied')
 
 
 # Products
@@ -182,7 +203,25 @@ with open('products.csv', 'r') as prods, open('categories.csv', 'r') as cats, op
     conn.commit()
 print("Products copied!")
 
-conn.close()
+#Voor products misshcien deze:
+Open de bestanden products.csv, categories.csv, discounts.csv, brands.csv, variants.csv, doelgroepen.csv, genders.csv:
+    skip header row van products.csv
+    importeer products.csv in tabel products
+    skip header row van categories.csv
+    importeer products.csv in tabel categories
+    skip header row van discounts.csv
+    importeer products.csv in tabel discounts
+    skip header row van brands.csv
+    importeer products.csv in tabel brands
+    skip header row van variants.csv
+    importeer products.csv in tabel variants
+    skip header row van doelgroepen.csv
+    importeer products.csv in tabel doelgroepen
+    skip header row van genders.csv
+    importeer products.csv in tabel genders
+Print('Profiles copied')
+
+conn.close() Sluit cconnectie met database
 
 print("Check postgres")
 playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
