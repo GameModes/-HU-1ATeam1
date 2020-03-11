@@ -39,7 +39,8 @@ cur.execute('''
             doelgroepenID int,
             brandsID int,
             variants int,
-	        discount int
+	    discount int,
+	    genders   varchar 
         );
         CREATE TABLE categories(
             id int,
@@ -53,8 +54,7 @@ cur.execute('''
         );
         CREATE TABLE doelgroepen(
             id int,
-            doelgroep varchar,
-            genders   varchar 
+            doelgroep varchar
         );
         
         --Profiles
