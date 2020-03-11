@@ -70,65 +70,86 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
             else:
                 de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            discs_writer.writerow(
-                    {
-                        'id': disc_dict[disc],
-                        'discount': disc
-                    }
-                )
-            disc_id = disc_dict[disc]
+            laat categorie_writer het volgende schrijven:
+                        bij id alle categorieID,
+                        bij categorie alle categorien,
+                        bij sub-categorie alle sub-categorien,
+                        bij sub-sub-categorie alle sub-sub-categorien
+            maak de cat_id uit de plek van de CategorieID
+            
+        if discount niet in discountdictionary:
+            if discountdictionary is niet leeg:
+                de plek waar alle_discounts in discountdictionary = zet alle_discounts achter in de lijst
+            else:
+                de plek waar alle_discounts in discountdictionary = zet alle_discounts in de lijst
 
-            if brand not in brands_dict:
-                if len(brands_dict) > 0:
-                    brands_dict[brand] = max(brands_dict.values()) + 1
-                else:
-                    brands_dict[brand] = 1
-                brand_writer.writerow(
-                    {
-                        'id': brands_dict[brand],
-                        'brand': brand
-                    }
-                )
-            brand_id = brands_dict[brand]
+            laat discount_writer het volgende schrijven:
+                        bij id alle discountsID,
+                        bij discount alle discounts,
+            maak de discount_id uit de plek van de discountID      
+            
+         if merk niet in merkictionary:
+            if merkictionary is niet leeg:
+                de plek waar merk in categoriedictionary = zet merk achter in de lijst
+            else:
+                de plek waar merk in categoriedictionary = zet merk in de lijst
 
-            if var not in vars_dict:
-                if len(vars_dict) > 0:
-                    vars_dict[var] = max(vars_dict.values()) + 1
-                else:
-                    vars_dict[var] = 1
-                var_writer.writerow(
-                    {
-                        'id': vars_dict[var],
-                        'variant': var
-                    }
-                )
-            var_id = vars_dict[var]
+            laat merk_writer het volgende schrijven
+                        bij id alle merkID,
+                        bij categorie alle merken,
+            maak de merk_id uit de plek van de merkID
+            
+         if variatie niet in variatiedictionary:
+            if variatieictionary is niet leeg:
+                de plek waar variatie in variatiedictionary = zet variatie achter in de lijst
+            else:
+                de plek waar variatie in variatiedictionary = zet variatie in de lijst
 
-            if doel not in doels_dict:
-                if len(doels_dict) > 0:
-                    doels_dict[doel] = max(doels_dict.values()) + 1
-                else:
-                    doels_dict[doel] = 1
-                doel_writer.writerow(
-                    {
-                        'id': doels_dict[doel],
-                        'doelgroep': doel
-                    }
-                )
-            doel_id = doels_dict[doel]
+            laat variatie_writer het volgende schrijven
+                        bij id alle variateID,
+                        bij categorie alle variaties,
+            maak de variatie_id uit de plek van de variatieID
+        
+         if doelgroep niet in doelgroepdictionary:
+            if deolgroepdictionary is niet leeg:
+                de plek waar doelgroep in doelgroepdictionary = zet alle_categories achter in de lijst
+            else:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
 
-            if gend not in gends_dict:
-                if len(gends_dict) > 0:
-                    gends_dict[gend] = max(gends_dict.values()) + 1
-                else:
-                    gends_dict[gend] = 1
-                gend_writer.writerow(
-                    {
-                        'id': gends_dict[gend],
-                        'gender': gend
-                    }
-                )
-            gend_id = gends_dict[gend]
+            laat categorie_writer het volgende schrijven
+                        bij id alle categorieID,
+                        bij categorie alle categorien,
+                        bij sub-categorie alle sub-categorien,
+                        bij sub-sub-categorie alle sub-sub-categorien
+            maak de cat_id uit de plek van de CategorieID
+            
+         if alle_categories niet in categoriedictionary:
+            if categoriedictionary is niet leeg:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
+            else:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+
+            laat categorie_writer het volgende schrijven
+                        bij id alle categorieID,
+                        bij categorie alle categorien,
+                        bij sub-categorie alle sub-categorien,
+                        bij sub-sub-categorie alle sub-sub-categorien
+            maak de cat_id uit de plek van de CategorieID
+         
+         if alle_categories niet in categoriedictionary:
+            if categoriedictionary is niet leeg:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
+            else:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+
+            laat categorie_writer het volgende schrijven
+                        bij id alle categorieID,
+                        bij categorie alle categorien,
+                        bij sub-categorie alle sub-categorien,
+                        bij sub-sub-categorie alle sub-sub-categorien
+            maak de cat_id uit de plek van de CategorieID
+            
+            
 
             if "." not in str(product["price"]["selling_price"]):
                 try:
@@ -153,7 +174,7 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
         except:
             print(prod_id)
     print(f"Finished creating the product database contents. {c} rows loaded.")
-    
+
 
 # Profiles
 with open('profiles.csv', 'r') as profs: 
