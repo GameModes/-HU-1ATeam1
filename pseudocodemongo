@@ -44,21 +44,10 @@ Open session.csv for WRITE:
 print(klaar met sessions laden)
 
 #kopje Product
-Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, variants.csv,doelgroep.csv, genders.csv for WRITE 
-    prods_fieldnames = opent products bij de sectie genderid
-    cats_fieldnames = opent de categorien bij de sectie sub_category
-    discs_fieldnames = opent de kortingen bij de sectie discounts
-    brands_fieldnames = opent de merken bij de sectie brand
-    vars_fieldnames = opent de variatie bij de sectie variant
-    doels_fieldnames = opent de doelgroepen bij de sectie doelgroep
-    gends_fieldnames = opent de geslacht bij de sectie gender
-    prod_writer = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (prods_fieldnames)
-    cats_writer = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (cats_fieldnames)
-    discs_writer = maakt een Discount Dictionary writer voor in de csv bestand uit de plaats van de gegevens (discs_fieldnames )
-    brand_writer = maakt een Merk Dictionary writer voor in de csv bestand uit de plaats van de gegevens (brands_fieldnames)
-    var_writer = maakt een Variatie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (vars_fieldnames )
-    doel_writer = maakt een doelgroepen Dictionary writer voor in de csv bestand uit de plaats van de gegevens (doels_fieldnames)
-    gend_writer = maakt een Geslacht Dictionary writer voor in de csv bestand uit de plaats van de gegevens (gends_fieldnames)
+Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, variants.csv,doelgroep.csv, genders.csv for WRITE
+    fieldnames = opent alle fieldnames bij de tabellen
+    writer = maakt een Dictionary writer voor in het csv bestand, gebaseerd op de naam van de writer
+
     dict = voor elke gegevenscategorie een lege dictionary behalve products
     for producten in de mongoDB in het kopje Products:
         ~
