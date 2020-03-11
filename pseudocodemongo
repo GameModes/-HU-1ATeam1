@@ -74,18 +74,7 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
                         bij categorie alle categorien,
                         bij sub-categorie alle sub-categorien,
                         bij sub-sub-categorie alle sub-sub-categorien
-            maak de cat_id uit de plek van de CategorieID
-            
-        if discount niet in discountdictionary:
-            if discountdictionary is niet leeg:
-                de plek waar alle_discounts in discountdictionary = zet alle_discounts achter in de lijst
-            else:
-                de plek waar alle_discounts in discountdictionary = zet alle_discounts in de lijst
-
-            laat discount_writer het volgende schrijven:
-                        bij id alle discountsID,
-                        bij discount alle discounts,
-            maak de discount_id uit de plek van de discountID      
+            maak de cat_id uit de plek van de CategorieID  
             
          if merk niet in merkictionary:
             if merkictionary is niet leeg:
@@ -97,17 +86,6 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
                         bij id alle merkID,
                         bij categorie alle merken,
             maak de merk_id uit de plek van de merkID
-            
-         if variatie niet in variatiedictionary:
-            if variatieictionary is niet leeg:
-                de plek waar variatie in variatiedictionary = zet variatie achter in de lijst
-            else:
-                de plek waar variatie in variatiedictionary = zet variatie in de lijst
-
-            laat variatie_writer het volgende schrijven
-                        bij id alle variateID,
-                        bij categorie alle variaties,
-            maak de variatie_id uit de plek van de variatieID
         
          if doelgroep niet in doelgroepdictionary:
             if deolgroepdictionary is niet leeg:
@@ -119,17 +97,6 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
                         bij id alle doelgroepID,
                         bij doelgroep alle doelgroepen,
             maak de doelgroep_id uit de plek van de DoelgroepID
-            
-         if geslacht niet in geslachtdictionary:
-            if geslachtdictionary is niet leeg:
-                de plek waar geslacht in geslachtdictionary = zet geslacht achter in de lijst
-            else:
-                de plek waar geslacht in geslachtdictionary = zet geslacht in de lijst
-
-            laat geslacht_writer het volgende schrijven:
-                        bij id alle geslachtID,
-                        bij geslachten alle geslachten,
-            maak de geslacht_id uit de plek van de geslachtID
     
             if "." not in verkoopprijs:
                 c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
@@ -184,7 +151,6 @@ Print('Profiles copied')
 
 conn.close() Sluit cconnectie met database
 
-print("Check postgres")
-playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
+print("Done!")
     
     
