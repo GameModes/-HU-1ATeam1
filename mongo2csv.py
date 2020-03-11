@@ -25,6 +25,7 @@ cur.execute('''
 conn.commit()
 print("tables dropped")
 cur.execute('''
+       --Products
         CREATE TABLE products(
             id varchar,
             name varchar,
@@ -34,8 +35,8 @@ cur.execute('''
             doelgroep_id int,
             discount varchar,
             variant varchar,
-            gender varchar
-        );
+            gender varchar 
+            );
         CREATE TABLE categories(
             id int,
             category varchar,
@@ -50,21 +51,64 @@ cur.execute('''
             id int,
             doelgroep varchar
         );
-        CREATE TABLE sessions(
-            id varchar,
-            session_start date,
-            session_end date,
-            has_sale boolean,
-            buid varchar,
-            product_ids text[]
-        );
-        CREATE TABLE profiles(
+        
+        --Profiles
+       CREATE TABLE profiles(
             id varchar,
             buids text[],
-            previously_recommended text[],
             segment varchar,
-            viewed_before text[],
             similars text[]
+        );
+        
+        
+       --Sessions
+        CREATE TABLE sessions(
+            id varchar,
+            profilesID varchar,
+            session_start date,
+            session_end date,
+            buid varchar,
+            has_sale int 
+        );
+        
+        
+        --Define primary keys (6x)
+        
+        ALTER Table products
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE categories
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE brands
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE doelgroepen
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE profiles
+        ADD PRIMARY KEY (id);
+        
+        ALTER TABLE sessions
+        ADD PRIMARY KEY (id);
+        
+        -- Define foreign keys
+        
+        -- products
+        ALTER TABLE products
+        ADD FOREIGN KEY (categoriesID) REFERENCES categories(id);
+        
+        ALTER TABLE products
+        ADD FOREIGN KEY (doelgroepenID) REFERENCES doelgroepen(id);
+        
+        ALTER TABLE products
+        ADD FOREIGN KEY (brandsID) REFERENCES brands(id);
+        
+       
+        
+        --sessions
+        ALTER TABLE  sessions
+        ADD FOREIGN KEY (profilesID) REFERENCES  profiles(id);
         );
         ''')
 conn.commit()
@@ -76,7 +120,7 @@ with open('profiles.csv', 'w', newline='') as profs:
     prof_writer = csv.DictWriter(profs, fieldnames=profs_fieldnames, quotechar="'", delimiter=";")
     prof_writer.writeheader()
     c = 0
-    for profile in mongoDB.visitors.find():
+    for profile in mongoDB.profiles.find():
         try:
             buids_list = profile["buids"]
             buids = ','.join(buids_list)
