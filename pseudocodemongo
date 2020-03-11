@@ -69,7 +69,6 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
                 de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
             else:
                 de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             laat categorie_writer het volgende schrijven:
                         bij id alle categorieID,
                         bij categorie alle categorien,
@@ -112,68 +111,44 @@ Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, varian
         
          if doelgroep niet in doelgroepdictionary:
             if deolgroepdictionary is niet leeg:
-                de plek waar doelgroep in doelgroepdictionary = zet alle_categories achter in de lijst
+                de plek waar doelgroep in doelgroepdictionary = zet doelgroep achter in de lijst
             else:
-                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+                de plek waar doelgroep in categoriedictionary = zet doelgroep in de lijst
 
-            laat categorie_writer het volgende schrijven
-                        bij id alle categorieID,
-                        bij categorie alle categorien,
-                        bij sub-categorie alle sub-categorien,
-                        bij sub-sub-categorie alle sub-sub-categorien
-            maak de cat_id uit de plek van de CategorieID
+            laat doelgroep_writer het volgende schrijven
+                        bij id alle doelgroepID,
+                        bij doelgroep alle doelgroepen,
+            maak de doelgroep_id uit de plek van de DoelgroepID
             
-         if alle_categories niet in categoriedictionary:
-            if categoriedictionary is niet leeg:
-                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
+         if geslacht niet in geslachtdictionary:
+            if geslachtdictionary is niet leeg:
+                de plek waar geslacht in geslachtdictionary = zet geslacht achter in de lijst
             else:
-                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+                de plek waar geslacht in geslachtdictionary = zet geslacht in de lijst
 
-            laat categorie_writer het volgende schrijven
-                        bij id alle categorieID,
-                        bij categorie alle categorien,
-                        bij sub-categorie alle sub-categorien,
-                        bij sub-sub-categorie alle sub-sub-categorien
-            maak de cat_id uit de plek van de CategorieID
-         
-         if alle_categories niet in categoriedictionary:
-            if categoriedictionary is niet leeg:
-                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
-            else:
-                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
-
-            laat categorie_writer het volgende schrijven
-                        bij id alle categorieID,
-                        bij categorie alle categorien,
-                        bij sub-categorie alle sub-categorien,
-                        bij sub-sub-categorie alle sub-sub-categorien
-            maak de cat_id uit de plek van de CategorieID
-            
-            
-
-            if "." not in str(product["price"]["selling_price"]):
-                try:
-                    prod_writer.writerow(
-                        {
-                            'id': prod_id,
-                            'name': remove_commas(str(product.get("name", None))),
-                            'price': product["price"]["selling_price"],
-                            'category_id': cat_id,
-                            'discount_id': disc_id,
-                            'brand_id': brand_id,
-                            'variant_id': var_id,
-                            'doelgroep_id': doel_id,
-                            'gender_id': gend_id
+            laat geslacht_writer het volgende schrijven:
+                        bij id alle geslachtID,
+                        bij geslachten alle geslachten,
+            maak de geslacht_id uit de plek van de geslachtID
+    
+            if "." not in verkoopprijs:
+                c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
+                laat product_writer het volgende schrijven:
+                            bij id product ID,
+                            bij name ~
+                            bij prijs verkoopprijs
+                            bij category_id de categoryid's
+                            bij discount_id de discountid's
+                            bij merk_id de merkid's
+                            bij variatie_id de variatieid's
+                            bij doelgroep_id de doelgroepid's
+                            bij geslacht_id de geslachtid's
                         }
                     )
                     c += 1
-                except:
-                    continue
-            if c % 10000 == 0:
-                print("{} product records written...".format(c))
-        except:
-            print(prod_id)
-    print(f"Finished creating the product database contents. {c} rows loaded.")
+            if c deelbaar is door 100000:
+                print(hoeveelheid c)
+print(klaar met products laden)
 
 
 # Profiles
