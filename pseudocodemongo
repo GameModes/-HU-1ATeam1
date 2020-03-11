@@ -1,6 +1,6 @@
 import databaseconnectiemodule, databaseadaptermodule, csvaanmaakbestandmodule
 
-def verwijderkomma's:
+functie verwijderkomma's:
     Geef alle waarden terug, waarbij de komma wordt vervangen door niks
    
 connectie = inloggevens voor psycopg2 om te koppelen met de database
@@ -13,35 +13,38 @@ cursor.execute(maak tabellen aan met hun relaties en keys)
 connectie.commit
 
 #kopje Profiles
-with open profiles.csv bestand met als leesregelvervanging ("w") als naam profs:
-   fieldnames = plek waar de bezochte products staan
+Open bestand profiles.csv for WRITE:
+   fieldnames = lijst met de bezochte attributen van de collection profiles die wordt gebruikt als header  
    profwriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
-   for profielen in de sectie visitors in de MongoDB database:
-       buidslist = sla id's van gebruikers op in een lijst
+   
+   for each profile in de collection profiles in de MongoDB database:
+       buidslist = sla de browserids op in een lijst
+       buids = voeg alle browserids in buidslist samen  met een komma als scheiding
+       
        if ";" niet in de lijst buids zit:
-            maakt van de waarde None (niet bestaand) om fouten te voorkomen
+             maakt van de waarde None (niet bestaand) om fouten te voorkomen 
+           Schrijf de benodigde eigenschappen uit collection profiles van Mongodb op de passende header 
+            c = c + 1
+            
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met profiles downloaden)
 
 #kopje Sessions
-with open sessions.csv bestand met als leesregelvervanging ("w") als naam sess:
-   fieldnames = plek waar de
+Open session.csv for WRITE:
+   fieldnames = lijst met de bezochte attributen van de collection sessons # kan beter uitgelegd worden
    sesswriter = maakt een Profile Dictionary writer aan voor in de csv bestand uit de plaats van de gegevens (fieldnames)
    c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
    for sessions in de sectie sessions in de MongoDB database:           
-        
-
+        Schrijf de benodigde eigenschappen uit collection session van Mongodb op de passende header
+        c = c + 1
       if c een 100000 tal bereikt dan:
         print(hoeveelheid c)
 print(klaar met sessions laden)
 
 #kopje Product
-with open productencsv bestand met als leesregel vervanging ("w") als naam product, open categorisecsv bestand met als leesregel vervanging ("w") als naam categorie, open discounts.csv met als leesregel vervanging ("w")
-    productwriter = maakt een Productie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category_id)
-    categoriewriter = maakt een Categorie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (category)
-    
+Open de bestanden products.csv, categories.csv,discounts.csv, brands.csv, variants.csv,doelgroep.csv, genders.csv for WRITE 
     prods_fieldnames = opent products bij de sectie genderid
     cats_fieldnames = opent de categorien bij de sectie sub_category
     discs_fieldnames = opent de kortingen bij de sectie discounts
@@ -56,6 +59,132 @@ with open productencsv bestand met als leesregel vervanging ("w") als naam produ
     var_writer = maakt een Variatie Dictionary writer voor in de csv bestand uit de plaats van de gegevens (vars_fieldnames )
     doel_writer = maakt een doelgroepen Dictionary writer voor in de csv bestand uit de plaats van de gegevens (doels_fieldnames)
     gend_writer = maakt een Geslacht Dictionary writer voor in de csv bestand uit de plaats van de gegevens (gends_fieldnames)
-    dict = een lege lijst voor elke gegevenscategorie
+    dict = voor elke gegevenscategorie een lege dictionary behalve products
+    for producten in de mongoDB in het kopje Products:
+        ~
+        voor elke gegevenscategorie ~
+        alle_categories = categorie + sub-categorie + sub-sub-categorie
+        if alle_categories niet in categoriedictionary:
+            if categoriedictionary is niet leeg:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories achter in de lijst
+            else:
+                de plek waar alle_categories in categoriedictionary = zet alle_categories in de lijst
+            laat categorie_writer het volgende schrijven:
+                        bij id alle categorieID,
+                        bij categorie alle categorien,
+                        bij sub-categorie alle sub-categorien,
+                        bij sub-sub-categorie alle sub-sub-categorien
+            maak de cat_id uit de plek van de CategorieID
+            
+        if discount niet in discountdictionary:
+            if discountdictionary is niet leeg:
+                de plek waar alle_discounts in discountdictionary = zet alle_discounts achter in de lijst
+            else:
+                de plek waar alle_discounts in discountdictionary = zet alle_discounts in de lijst
+
+            laat discount_writer het volgende schrijven:
+                        bij id alle discountsID,
+                        bij discount alle discounts,
+            maak de discount_id uit de plek van de discountID      
+            
+         if merk niet in merkictionary:
+            if merkictionary is niet leeg:
+                de plek waar merk in categoriedictionary = zet merk achter in de lijst
+            else:
+                de plek waar merk in categoriedictionary = zet merk in de lijst
+
+            laat merk_writer het volgende schrijven
+                        bij id alle merkID,
+                        bij categorie alle merken,
+            maak de merk_id uit de plek van de merkID
+            
+         if variatie niet in variatiedictionary:
+            if variatieictionary is niet leeg:
+                de plek waar variatie in variatiedictionary = zet variatie achter in de lijst
+            else:
+                de plek waar variatie in variatiedictionary = zet variatie in de lijst
+
+            laat variatie_writer het volgende schrijven
+                        bij id alle variateID,
+                        bij categorie alle variaties,
+            maak de variatie_id uit de plek van de variatieID
+        
+         if doelgroep niet in doelgroepdictionary:
+            if deolgroepdictionary is niet leeg:
+                de plek waar doelgroep in doelgroepdictionary = zet doelgroep achter in de lijst
+            else:
+                de plek waar doelgroep in categoriedictionary = zet doelgroep in de lijst
+
+            laat doelgroep_writer het volgende schrijven
+                        bij id alle doelgroepID,
+                        bij doelgroep alle doelgroepen,
+            maak de doelgroep_id uit de plek van de DoelgroepID
+            
+         if geslacht niet in geslachtdictionary:
+            if geslachtdictionary is niet leeg:
+                de plek waar geslacht in geslachtdictionary = zet geslacht achter in de lijst
+            else:
+                de plek waar geslacht in geslachtdictionary = zet geslacht in de lijst
+
+            laat geslacht_writer het volgende schrijven:
+                        bij id alle geslachtID,
+                        bij geslachten alle geslachten,
+            maak de geslacht_id uit de plek van de geslachtID
+    
+            if "." not in verkoopprijs:
+                c = meetel variabele, om bij fout meldingen te kijken waar het programma gebleven is.
+                laat product_writer het volgende schrijven:
+                            bij id product ID,
+                            bij name ~
+                            bij prijs verkoopprijs
+                            bij category_id de categoryid's
+                            bij discount_id de discountid's
+                            bij merk_id de merkid's
+                            bij variatie_id de variatieid's
+                            bij doelgroep_id de doelgroepid's
+                            bij geslacht_id de geslachtid's
+                        }
+                    )
+                    c += 1
+            if c deelbaar is door 100000:
+                print(hoeveelheid c)
+print(klaar met products laden)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Profiles
+Open bestand profiles.csv:
+    skip header row van profiles.csv
+    importeer profiles.csv in tabel profiles
+Print('Profiles copied')
+
+
+# Sessions
+Open bestand sessions.csv:
+    skip header row van session.csv
+    importeer profiles.csv in tabel sessions
+Print('Sessions copied')
+
+#Products
+Open de bestanden products.csv, categories.csv, discounts.csv, brands.csv, variants.csv, doelgroepen.csv, genders.csv:
+    skip header row van products.csv
+    importeer products.csv in tabel products
+    skip header row van categories.csv
+    importeer products.csv in tabel categories
+    skip header row van discounts.csv
+    importeer products.csv in tabel discounts
+    skip header row van brands.csv
+    importeer products.csv in tabel brands
+    skip header row van variants.csv
+    importeer products.csv in tabel variants
+    skip header row van doelgroepen.csv
+    importeer products.csv in tabel doelgroepen
+    skip header row van genders.csv
+    importeer products.csv in tabel genders
+Print('Profiles copied')
+
+conn.close() Sluit cconnectie met database
+
+print("Check postgres")
+playsound('C:/Users/Floris Videler/Downloads/Ding Sound Effect.mp3')
     
     
